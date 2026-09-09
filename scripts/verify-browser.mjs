@@ -79,7 +79,7 @@ await page.getByRole("button", { name: "Zoom in", exact: true }).click();
 await expect(page.locator(".dialog-image")).toHaveClass(/zoomed/);
 await page.keyboard.press("Escape");
 await expect(page.getByRole("dialog")).not.toBeVisible();
-expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
+await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe("");
 for (const id of [
   "spaces",
   "masterplan",
