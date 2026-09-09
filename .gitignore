@@ -8,3 +8,6 @@ public/assets/preview.png
 public/assets/corporate_estate.glb
 public/assets/README.txt
 .source-assets/
+
+.vercel
+.env*
