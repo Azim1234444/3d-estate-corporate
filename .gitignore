@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.tsbuildinfo
+test-results/
+scripts/source.html
+public/assets/source-*.jpg
+public/assets/preview.png
+public/assets/corporate_estate.glb
+public/assets/README.txt
+.source-assets/
