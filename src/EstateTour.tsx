@@ -62,6 +62,8 @@ const chapters = [
 export default function EstateTour() {
   const section = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+  const [motionOptIn, setMotionOptIn] = useState(false);
+  const respectReducedMotion = Boolean(reduced) && !motionOptIn;
   const visible = useInView(section);
   const [paused, setPaused] = useState(false),
     [ready, setReady] = useState(false),
@@ -79,17 +81,14 @@ export default function EstateTour() {
   useMotionValueEvent(scrollYProgress, "change", (p) =>
     setChapter(p < 0.32 ? 0 : p < 0.7 ? 1 : 2),
   );
-  const noMotion = Boolean(reduced) || paused || failed;
+  const noMotion = respectReducedMotion || paused || failed;
   const stageProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
   useEffect(() => {
     if (visible) setStarted(true);
   }, [visible]);
   useEffect(() => {
     if (!started) return;
-    if (reduced) {
-      setGraphicsChecked(true);
-      return;
-    }
+    if (respectReducedMotion) return;
     // Detect unsupported/disabled GPU contexts before R3F's asynchronous renderer setup.
     // A failed async WebGL constructor is not reliably caught by a React boundary.
     const probe = document.createElement("canvas");
@@ -101,7 +100,7 @@ export default function EstateTour() {
       setFailed(true);
     }
     setGraphicsChecked(true);
-  }, [reduced, started]);
+  }, [respectReducedMotion, started]);
   useEffect(() => {
     const listener = () => setHidden(document.hidden);
     document.addEventListener("visibilitychange", listener);
@@ -201,7 +200,7 @@ export default function EstateTour() {
               <span className="static-label">
                 {failed
                   ? "3D unavailable · Static preview"
-                  : reduced
+                  : respectReducedMotion
                     ? "Reduced motion · Static preview"
                     : "Static preview"}
               </span>
@@ -209,19 +208,24 @@ export default function EstateTour() {
           </div>
           <div className="tour-note">
             <span>Illustrative model · Not to scale</span>
-            {!reduced && !failed && (
+            {!failed && (
               <button
-                className="icon-button"
+                className={noMotion ? "animation-enable" : "icon-button"}
                 onClick={() => {
                   setReady(false);
-                  setPaused(!paused);
+                  if (noMotion) {
+                    setMotionOptIn(true);
+                    setPaused(false);
+                  } else {
+                    setPaused(true);
+                  }
                 }}
                 aria-label={
-                  paused ? "Enable 3D animation" : "Pause 3D animation"
+                  noMotion ? "Enable 3D animation" : "Pause 3D animation"
                 }
-                title={paused ? "Enable 3D animation" : "Pause 3D animation"}
+                title={noMotion ? "Enable 3D animation" : "Pause 3D animation"}
               >
-                {paused ? <Play size={17} /> : <Pause size={17} />}
+                {noMotion ? <><Play size={17} /> Enable 3D animation</> : <Pause size={17} />}
               </button>
             )}
           </div>

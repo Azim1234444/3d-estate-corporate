@@ -538,6 +538,24 @@ summary:focus-visible {
   width: 33px;
   height: 33px;
 }
+.animation-enable {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid currentColor;
+  background: var(--paper, #f3f1ea);
+  color: var(--ink, #292d28);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.tour-static .tour-note {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 .tour-progress {
   position: absolute;
   height: 2px;
@@ -1652,18 +1670,6 @@ summary:focus-visible {
   *:after {
     animation: none !important;
     transition: none !important;
-  }
-  .tour {
-    height: auto;
-  }
-  .tour-sticky {
-    position: relative;
-  }
-  .scene-wrap > div {
-    display: none;
-  }
-  .scene-poster {
-    opacity: 1 !important;
   }
 }
 @media (max-width: 767px) {

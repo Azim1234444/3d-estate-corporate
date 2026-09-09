@@ -114,6 +114,20 @@ await expect(page.locator("canvas")).toHaveCount(0);
 await page.locator("#experience").scrollIntoViewIfNeeded();
 await expect(page.getByText("Reduced motion · Static preview")).toBeVisible();
 await page.screenshot({ path: "test-results/reduced-motion.png" });
+await page.getByRole("button", { name: "Enable 3D animation" }).click();
+await progress(0.08);
+await expect(page.locator(".scene-ready canvas")).toBeVisible({ timeout: 30000 });
+await expect(page.locator("#experience")).not.toHaveClass(/tour-static/);
+await page.waitForTimeout(500);
+const optedInStart = await page.locator("canvas").screenshot();
+await progress(0.2);
+expect((await page.locator("canvas").screenshot()).equals(optedInStart)).toBeFalsy();
+await progress(0.08);
+expect((await page.locator("canvas").screenshot()).equals(optedInStart)).toBeTruthy();
+await page.screenshot({ path: "test-results/reduced-motion-enabled.png" });
+await page.getByRole("button", { name: "Pause 3D animation" }).click();
+await expect(page.locator("canvas")).toHaveCount(0);
+console.log("PASS: reduced-motion mobile manual opt-in, forward/reverse animation and pause.");
 expect(errors).toEqual([]);
 console.log(
   "PASS: deterministic scroll/reverse/stationary renders, viewpoints, pause/resume, all disclosures, dialog zoom/Escape, enquiry links, 5 viewport widths, mobile menu, reduced motion, no runtime errors.",
