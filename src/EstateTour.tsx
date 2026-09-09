@@ -62,8 +62,6 @@ const chapters = [
 export default function EstateTour() {
   const section = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const [motionOptIn, setMotionOptIn] = useState(false);
-  const respectReducedMotion = Boolean(reduced) && !motionOptIn;
   const visible = useInView(section);
   const [paused, setPaused] = useState(false),
     [ready, setReady] = useState(false),
@@ -81,14 +79,13 @@ export default function EstateTour() {
   useMotionValueEvent(scrollYProgress, "change", (p) =>
     setChapter(p < 0.32 ? 0 : p < 0.7 ? 1 : 2),
   );
-  const noMotion = respectReducedMotion || paused || failed;
+  const noMotion = paused || failed;
   const stageProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
   useEffect(() => {
     if (visible) setStarted(true);
   }, [visible]);
   useEffect(() => {
     if (!started) return;
-    if (respectReducedMotion) return;
     // Detect unsupported/disabled GPU contexts before R3F's asynchronous renderer setup.
     // A failed async WebGL constructor is not reliably caught by a React boundary.
     const probe = document.createElement("canvas");
@@ -100,7 +97,7 @@ export default function EstateTour() {
       setFailed(true);
     }
     setGraphicsChecked(true);
-  }, [respectReducedMotion, started]);
+  }, [started]);
   useEffect(() => {
     const listener = () => setHidden(document.hidden);
     document.addEventListener("visibilitychange", listener);
@@ -200,9 +197,7 @@ export default function EstateTour() {
               <span className="static-label">
                 {failed
                   ? "3D unavailable · Static preview"
-                  : respectReducedMotion
-                    ? "Reduced motion · Static preview"
-                    : "Static preview"}
+                  : "Static preview"}
               </span>
             )}
           </div>
@@ -214,7 +209,6 @@ export default function EstateTour() {
                 onClick={() => {
                   setReady(false);
                   if (noMotion) {
-                    setMotionOptIn(true);
                     setPaused(false);
                   } else {
                     setPaused(true);

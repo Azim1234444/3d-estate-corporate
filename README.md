@@ -30,7 +30,7 @@ npm test
 
 The source model contained 1,035 meshes. `public/assets/estate-web.glb` reduces this to 23 meshes, including nine animated car parts. The original source had no animation clips; the browser computes motion deterministically from scroll progress. Rendering occurs on demand and pauses when the page or tour is inactive. Pixel density is capped at 1.5.
 
-The master plan uses a native modal dialog, including keyboard dismissal and zoom. Specifications use native disclosure controls. Reduced-motion visitors and browsers that cannot render the model receive a static poster and all property content.
+The master plan uses a native modal dialog, including keyboard dismissal and zoom. Specifications use native disclosure controls. The scroll-driven 3D tour starts automatically when visible, including with reduced motion enabled, and has a manual pause control. Reduced motion still disables decorative transitions and smooth chapter navigation. Browsers that cannot render the model receive a static poster and all property content.
 
 ## Assets and provenance
 
